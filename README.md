@@ -3,7 +3,17 @@
 > A full-stack blogging platform with a dark editorial aesthetic. Think Medium, but moodier.
 
 🌐 **Live:** [ink-a-blog-platform-g157.vercel.app](https://ink-a-blog-platform-g157.vercel.app)  
-⚙️ **API:** [ink-a-blog-platform-production.up.railway.app](https://ink-a-blog-platform-production.up.railway.app/health)
+⚙️ **API:** [ink-a-blog-platform-production.up.railway.app/health](https://ink-a-blog-platform-production.up.railway.app/health)
+
+---
+
+## Preview
+
+### Feed Page
+![INK Feed](https://res.cloudinary.com/do0dfbjqs/image/upload/v1773864434/ChatGPT_Image_Mar_19_2026_12_40_16_AM_a8h6kk.png)
+
+### Library Background (all other pages)
+![INK Library](https://res.cloudinary.com/do0dfbjqs/image/upload/v1773864434/ChatGPT_Image_Mar_19_2026_01_29_24_AM_zj6oya.png)
 
 ---
 
@@ -40,7 +50,7 @@
 - 🔔 **Toast notifications** — success, error, info
 - 📚 **Library background** — immersive dark bookshelf aesthetic
 - 🪟 **Glass morphism cards** — backdrop blur throughout
-- 404 **Custom not found page**
+- 🚫 **Custom 404 page**
 
 ---
 
@@ -199,7 +209,7 @@ All responses use a consistent envelope:
 | Service | `ink-a-blog-platform` |
 | Database | PostgreSQL plugin |
 | Start Command | `npm run db:migrate && node server/index.js` |
-| URL | `ink-a-blog-platform-production.up.railway.app` |
+| Live URL | `https://ink-a-blog-platform-production.up.railway.app` |
 
 **Environment variables on Railway:**
 ```
@@ -216,7 +226,7 @@ DATABASE_URL=<auto-injected by Railway Postgres plugin>
 | Root Directory | `client` |
 | Install Command | `npm install --legacy-peer-deps` |
 | Build Command | `node ./node_modules/vite/bin/vite.js build` |
-| URL | `ink-a-blog-platform-g157.vercel.app` |
+| Live URL | `https://ink-a-blog-platform-g157.vercel.app` |
 
 **Environment variables on Vercel:**
 ```
