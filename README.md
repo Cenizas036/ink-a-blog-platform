@@ -1,8 +1,9 @@
 # INK — Write What Matters
 
-A full-stack blogging platform built with a dark editorial aesthetic. Think Medium, but moodier.
+> A full-stack blogging platform with a dark editorial aesthetic. Think Medium, but moodier.
 
-![INK Feed](https://res.cloudinary.com/do0dfbjqs/image/upload/v1773864434/ChatGPT_Image_Mar_19_2026_12_40_16_AM_a8h6kk.png)
+🌐 **Live:** [ink-a-blog-platform-g157.vercel.app](https://ink-a-blog-platform-g157.vercel.app)  
+⚙️ **API:** [ink-a-blog-platform-production.up.railway.app](https://ink-a-blog-platform-production.up.railway.app/health)
 
 ---
 
@@ -12,33 +13,34 @@ A full-stack blogging platform built with a dark editorial aesthetic. Think Medi
 |---|---|
 | Backend | Node.js + Express |
 | Database | PostgreSQL (pg pool) |
-| Auth | JWT + bcrypt |
+| Auth | JWT + bcryptjs |
 | Frontend | React + Vite |
 | Animations | Framer Motion |
 | Markdown | react-markdown + remark-gfm |
 | State | Zustand |
 | HTTP Client | Axios |
 | Image Hosting | Cloudinary |
-| Deploy | Railway (backend) + Vercel (frontend) |
+| Backend Deploy | Railway |
+| Frontend Deploy | Vercel |
 
 ---
 
 ## Features
 
-- **Dark editorial UI** — Playfair Display headings, IBM Plex body, amber gold accent
-- **Full auth** — register, login, JWT-protected routes, login success animation
-- **Markdown editor** — write and preview posts with live tab switching
-- **Cloudinary image upload** — cover images and profile avatars
-- **Likes** — optimistic UI, no page reload
-- **Comments** — real-time add/delete
-- **Tag filtering** — click any tag to filter the feed
-- **Infinite scroll** — IntersectionObserver based
-- **Search** — full-text search across titles and bodies
-- **Profile pages** — stats, bio, avatar, all user posts
-- **Toast notifications** — success, error, info
-- **404 page** — custom not found
-- **Library background** — immersive dark bookshelf aesthetic
-- **Glass morphism cards** — backdrop blur throughout
+- 🌑 **Dark editorial UI** — Playfair Display headings, IBM Plex body, amber gold accent
+- 🔐 **Full auth** — register, login, JWT-protected routes, animated login success overlay
+- ✍️ **Markdown editor** — write and preview posts with live tab switching
+- 🖼️ **Cloudinary image upload** — cover images and profile avatars
+- ❤️ **Likes** — optimistic UI, instant update without page reload
+- 💬 **Comments** — add and delete in real time
+- 🏷️ **Tag filtering** — click any tag to filter the feed
+- ♾️ **Infinite scroll** — IntersectionObserver based pagination
+- 🔍 **Search** — full-text search across titles and bodies
+- 👤 **Profile pages** — stats, bio, avatar upload, all user posts
+- 🔔 **Toast notifications** — success, error, info
+- 📚 **Library background** — immersive dark bookshelf aesthetic
+- 🪟 **Glass morphism cards** — backdrop blur throughout
+- 404 **Custom not found page**
 
 ---
 
@@ -55,27 +57,27 @@ ink/
 │   │   ├── auth.js         # requireAuth + optionalAuth
 │   │   └── validate.js     # express-validator handler
 │   ├── routes/
-│   │   ├── auth.js         # register, login, /me
-│   │   ├── posts.js        # full CRUD + likes + feed
+│   │   ├── auth.js         # register, login, /me, PATCH /me
+│   │   ├── posts.js        # full CRUD + likes + feed + search
 │   │   └── comments.js     # list, create, delete
 │   └── index.js            # Express app entry point
 │
 └── client/
     └── src/
-        ├── api/index.js        # Axios instance + all API calls
-        ├── store/authStore.js  # Zustand auth state
+        ├── api/index.js            # Axios instance + all API calls
+        ├── store/authStore.js      # Zustand auth state
         ├── components/
-        │   ├── Navbar.jsx
-        │   ├── PostCard.jsx
-        │   ├── Toast.jsx
-        │   └── LoginSuccess.jsx
+        │   ├── Navbar.jsx          # Sticky nav with dropdown profile menu
+        │   ├── PostCard.jsx        # Animated feed card
+        │   ├── Toast.jsx           # Toast notification system
+        │   └── LoginSuccess.jsx    # Login success overlay animation
         └── pages/
-            ├── Feed.jsx
-            ├── PostPage.jsx
-            ├── Write.jsx
-            ├── Auth.jsx
-            ├── Profile.jsx
-            └── NotFound.jsx
+            ├── Feed.jsx            # Paginated grid, search, tag filter, infinite scroll
+            ├── PostPage.jsx        # Markdown render, likes, comments
+            ├── Write.jsx           # Markdown editor + preview + Cloudinary upload
+            ├── Auth.jsx            # Login + register with animation
+            ├── Profile.jsx         # User posts, stats, bio, avatar upload
+            └── NotFound.jsx        # Custom 404
 ```
 
 ---
@@ -91,20 +93,20 @@ ink/
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/ink.git
-cd ink
+git clone https://github.com/Cenizas036/ink-a-blog-platform.git
+cd ink-a-blog-platform
 
 # Install backend dependencies
 npm install
 
 # Install frontend dependencies
-cd client && npm install && cd ..
+cd client && npm install --legacy-peer-deps && cd ..
 
 # Create environment file
 cp .env.example .env
-# Fill in your DATABASE_URL, JWT_SECRET, etc.
+# Fill in your DATABASE_URL, JWT_SECRET etc.
 
-# Run migrations and seed data
+# Run migrations and seed demo data
 npm run db:migrate
 npm run db:seed
 ```
@@ -175,6 +177,15 @@ COMMENTS
   GET    /comments/:postId     → all comments
   POST   /comments/:postId     🔒 → add comment
   DELETE /comments/:id         🔒 → delete comment
+
+HEALTH
+  GET    /health               → { status: "ok", timestamp }
+```
+
+All responses use a consistent envelope:
+```json
+{ "data": { ... }, "error": null }
+{ "data": null, "error": { "code": "...", "message": "..." } }
 ```
 
 ---
@@ -183,18 +194,36 @@ COMMENTS
 
 ### Backend → Railway
 
-1. Push repo to GitHub
-2. Railway → New Project → Deploy from GitHub
-3. Add PostgreSQL plugin
-4. Set env vars: `NODE_ENV`, `JWT_SECRET`, `CLIENT_URL`
-5. Run `npm run db:migrate` in Railway shell
+| Setting | Value |
+|---|---|
+| Service | `ink-a-blog-platform` |
+| Database | PostgreSQL plugin |
+| Start Command | `npm run db:migrate && node server/index.js` |
+| URL | `ink-a-blog-platform-production.up.railway.app` |
+
+**Environment variables on Railway:**
+```
+NODE_ENV=production
+JWT_SECRET=<your secret>
+CLIENT_URL=https://ink-a-blog-platform-g157.vercel.app
+DATABASE_URL=<auto-injected by Railway Postgres plugin>
+```
 
 ### Frontend → Vercel
 
-1. Vercel → New Project → Import repo
-2. Set root directory to `client`
-3. Set env vars: `VITE_API_URL`, `VITE_CLOUDINARY_CLOUD`, `VITE_CLOUDINARY_PRESET`
-4. Deploy
+| Setting | Value |
+|---|---|
+| Root Directory | `client` |
+| Install Command | `npm install --legacy-peer-deps` |
+| Build Command | `node ./node_modules/vite/bin/vite.js build` |
+| URL | `ink-a-blog-platform-g157.vercel.app` |
+
+**Environment variables on Vercel:**
+```
+VITE_API_URL=https://ink-a-blog-platform-production.up.railway.app/api/v1
+VITE_CLOUDINARY_CLOUD=do0dfbjqs
+VITE_CLOUDINARY_PRESET=ink_uploads
+```
 
 ---
 
@@ -212,4 +241,4 @@ COMMENTS
 
 ---
 
-Built by [Sanket](https://github.com/Cenizas036)
+Built by [Cenizas036](https://github.com/Cenizas036)
